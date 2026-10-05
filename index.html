@@ -889,38 +889,6 @@
                 document.getElementById("location").value;
 
             const priority =
-                document.getElementById("priority").value;
-
-            const description =
-                document.getElementById("
-<script>
-    // ===== FIXIT CAMPUS MAINTENANCE JAVASCRIPT =====
-    // Replace your whole <script> ... </script> block with this one.
-
-    const API_URL = "/api/complaints";
-    const STORAGE_KEY = "fixit_complaints";
-
-    // Sample data (used only if the server is not reachable and nothing is saved)
-    const sampleComplaints = [
-        { category: "Electrical", location: "Block A, Room 102", priority: "High", description: "Ceiling fan is not working.", status: "Pending" },
-        { category: "Plumbing", location: "Block B, Second Floor Restroom", priority: "Medium", description: "Water tap is leaking.", status: "In Progress" },
-        { category: "Furniture", location: "Block C, Room 205", priority: "Low", description: "One classroom chair is damaged.", status: "Resolved" }
-    ];
-
-    let complaints = [];
-
-    const complaintForm = document.getElementById("complaintForm");
-    const tableBody = document.getElementById("complaintTableBody");
-    const searchInput = document.getElementById("searchInput");
-    const filterStatus = document.getElementById("filterStatus");
-    const emptyMessage = document.getElementById("emptyMessage");
-    const successMessage = document.getElementById("successMessage");
-
-    // Prevent HTML injection from user-entered text
-    function escapeHTML(text) {
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
-    }
+                
 
   

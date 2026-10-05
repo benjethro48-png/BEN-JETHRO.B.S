@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixIt - Campus Maintenance</title>
+    <style>
+        :root {
+            --primary-color: #0A2540;
+            --secondary-color: #00D2B4;
+            --accent-color: #FF5A5F;
+            --text-color: #333;
+            --light-bg: #F8F9FA;
+            --white: #FFFFFF;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+        header {
+            background-color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+        .logo-text h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        .logo-text p {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-left: 20px;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: var(--secondary-color);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .stat-card p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: start;
+        }
+        .card {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        .card h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+        button.submit-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+        }
+        button.submit-btn:hover {
+            background-color: #1A3E6D;
+            transform: translateY(-2px);
+        }
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+        .search-bar {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .badge-pending {
+            background-color: #FFF3CD;
+            color: #856404;
+        }
+        .badge-progress {
+            background-color: #CCE5FF;
+            color: #004085;
+        }
+        .badge-resolved {
+            background-color: #D4EDDA;
+            color: #155724;
+        }
+        .badge-high {
+            background-color: #F8D7DA;
+            color: #721C24;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-section">
+            <div class="logo-placeholder">FixIt</div>
+            <div class="logo-text">
+                <h1>FixIt</h1>
+                <p>Campus Maintenance</p>
+            </div>
+        </div>
+        <nav>
+            <a href="#">டேஷ்போர்டு</a>
+            <a href="#">புகார்கள்</a>
+            <a href="#">பயனர் பக்கம்</a>
+        </nav>
+    </header>
+    <div class="container">
+        <section class="dashboard-stats">
+            <div class="stat-card">
+                <h3>நிலுவையில் உள்ளவை</h3>
+                <p>12</p>
+            </div>
+            <div class="stat-card">
+                <h3>செயல்பாட்டில் உள்ளவை</h3>
+                <p>5</p>
+            </div>
+            <div class="stat-card">
+                <h3>தீர்க்கப்பட்டவை</h3>
+                <p>28</p>
+            </div>
+        </section>
+        <div class="main-content">
+            <section class="card">
+                <h2>புதிய புகார் பதிவு செய்</h2>
+                <form id="complaintForm">
+                    <div class="form-group">
+                        <label for="category">பிரச்சனை வகை</label>
+                        <select id="category" required>
+                            <option value="">ஒன்றைத் தேர்ந்தெடுக்கவும்</option>
+                            <option value="electrical">மின்சாரம் (Electrical)</option>
+                            <option value="plumbing">குழாய் பழுது (Plumbing)</option>
+                            <option value="furniture">தளவாடங்கள் (Furniture)</option>
+                            <option value="civil">கட்டிட பராமரிப்பு (Civil)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">இடம்</label>
+                        <input type="text" id="location" placeholder="எ.கா: பிளாக் A, அறை 102" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">முன்னுரிமை</label>
+                        <select id="priority" required>
+                            <option value="low">குறைந்த (Low)</option>
+                            <option value="medium">நடுத்தர (Medium)</option>
+                            <option value="high">அவசரம் (High)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">விவரம்</label>
+                        <textarea id="description" rows="4" placeholder="பிரச்சனையை விரிவாக எழுதவும்" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submitComplaint">புகாரை அனுப்பு</button>
+                </form>
+            </section>
+            <section class="card">
+                <h2>அனைத்து புகார்கள்</h2>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="புகார்களைத் தேடவும்...">
+                </div>
+                <div class="filters">
+                    <select id="filterStatus">
+                        <option value="all">அனைத்து நிலைகள்</option>
+                        <option value="pending">நிலுவையில்</option>
+                        <option value="progress">செயல்பாட்டில்</option>
+                        <option value="resolved">தீர்க்கப்பட்டது</option>
+                    </select>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>வகை</th>
+                            <th>இடம்</th>
+                            <th>முன்னுரிமை</th>
+                            <th>நிலை</th>
+                        </tr>
+                    </thead>
+                    <tbody id="complaintTableBody">
+                        <tr>
+                            <td>மின்சாரம்</td>
+                            <td>பிளாக் A, அறை 102</td>
+                            <td><span class="badge badge-high">அவசரம்</span></td>
+                            <td><span class="badge badge-pending">நிலுவையில்</span></td>
+                        </tr>
+                        <tr>
+                            <td>குழாய் பழுது</td>
+                            <td>இரண்டாம் அடுக்கு கழிப்பறை</td>
+                            <td><span class="badge">நடுத்தர</span></td>
+                            <td><span class="badge badge-progress">செயல்பாட்டில்</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+    <script>
+        document.getElementById('complaintForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('புகார் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!');
+            this.reset();
+        });
+        
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            let filter = this.value.toUpperCase();
+            let rows = document.getElementById('complaintTableBody').getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                let text = rows[i].textContent || rows[i].innerText;
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        });
+    </script>
+</body>
+</html>

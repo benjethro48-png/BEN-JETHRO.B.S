@@ -893,3 +893,160 @@
 
             const description =
                 document.getElementById("
+<script>
+    // ===== FIXIT CAMPUS MAINTENANCE JAVASCRIPT =====
+    // Replace your whole <script> ... </script> block with this one.
+
+    const API_URL = "/api/complaints";
+    const STORAGE_KEY = "fixit_complaints";
+
+    // Sample data (used only if the server is not reachable and nothing is saved)
+    const sampleComplaints = [
+        { category: "Electrical", location: "Block A, Room 102", priority: "High", description: "Ceiling fan is not working.", status: "Pending" },
+        { category: "Plumbing", location: "Block B, Second Floor Restroom", priority: "Medium", description: "Water tap is leaking.", status: "In Progress" },
+        { category: "Furniture", location: "Block C, Room 205", priority: "Low", description: "One classroom chair is damaged.", status: "Resolved" }
+    ];
+
+    let complaints = [];
+
+    const complaintForm = document.getElementById("complaintForm");
+    const tableBody = document.getElementById("complaintTableBody");
+    const searchInput = document.getElementById("searchInput");
+    const filterStatus = document.getElementById("filterStatus");
+    const emptyMessage = document.getElementById("emptyMessage");
+    const successMessage = document.getElementById("successMessage");
+
+    // Prevent HTML injection from user-entered text
+    function escapeHTML(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ===== BACKEND COMMUNICATION =====
+
+    // Load complaints from the server (fallback: localStorage)
+    async function loadComplaints() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error("Server error");
+            complaints = await response.json();
+        } catch (error) {
+            console.warn("Backend not reachable, using local storage.");
+            const saved = localStorage.getItem(STORAGE_KEY);
+            complaints = saved ? JSON.parse(saved) : sampleComplaints;
+        }
+        displayComplaints();
+    }
+
+    // Send a new complaint to the server (fallback: localStorage)
+    async function sendComplaint(newComplaint) {
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newComplaint)
+            });
+            if (!response.ok) throw new Error("Server error");
+            const saved = await response.json();
+            complaints.push(saved);
+        } catch (error) {
+            console.warn("Backend not reachable, saving locally.");
+            newComplaint.status = "Pending";
+            complaints.push(newComplaint);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(complaints));
+        }
+    }
+
+    // ===== DISPLAY COMPLAINTS =====
+
+    function displayComplaints() {
+        tableBody.innerHTML = "";
+
+        const searchText = searchInput.value.toLowerCase();
+        const selectedStatus = filterStatus.value;
+
+        const filtered = complaints.filter(function (c) {
+            const matchesSearch =
+                c.category.toLowerCase().includes(searchText) ||
+                c.location.toLowerCase().includes(searchText) ||
+                c.description.toLowerCase().includes(searchText);
+
+            const matchesStatus =
+                selectedStatus === "all" || c.status === selectedStatus;
+
+            return matchesSearch && matchesStatus;
+        });
+
+        emptyMessage.style.display = filtered.length === 0 ? "block" : "none";
+
+        filtered.forEach(function (c) {
+            const row = document.createElement("tr");
+
+            let priorityClass = "badge-low";
+            if (c.priority === "High") priorityClass = "badge-high";
+            else if (c.priority === "Medium") priorityClass = "badge-medium";
+
+            let statusClass = "badge-resolved";
+            if (c.status === "Pending") statusClass = "badge-pending";
+            else if (c.status === "In Progress") statusClass = "badge-progress";
+
+            row.innerHTML = `
+                <td>${escapeHTML(c.category)}</td>
+                <td><strong>${escapeHTML(c.location)}</strong></td>
+                <td><span class="badge ${priorityClass}">${escapeHTML(c.priority)}</span></td>
+                <td class="description">${escapeHTML(c.description)}</td>
+                <td><span class="badge ${statusClass}">${escapeHTML(c.status)}</span></td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        updateDashboard();
+    }
+
+    // ===== DASHBOARD COUNTS =====
+
+    function updateDashboard() {
+        const count = function (status) {
+            return complaints.filter(function (c) { return c.status === status; }).length;
+        };
+
+        document.getElementById("totalCount").textContent = complaints.length;
+        document.getElementById("pendingCount").textContent = count("Pending");
+        document.getElementById("progressCount").textContent = count("In Progress");
+        document.getElementById("resolvedCount").textContent = count("Resolved");
+    }
+
+    // ===== SUBMIT NEW COMPLAINT =====
+
+    complaintForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const newComplaint = {
+            category: document.getElementById("category").value,
+            location: document.getElementById("location").value.trim(),
+            priority: document.getElementById("priority").value,
+            description: document.getElementById("description").value.trim()
+        };
+
+        await sendComplaint(newComplaint);
+
+        complaintForm.reset();
+        displayComplaints();
+
+        successMessage.style.display = "block";
+        setTimeout(function () {
+            successMessage.style.display = "none";
+        }, 3000);
+    });
+
+    // Live search and filter
+    searchInput.addEventListener("input", displayComplaints);
+    filterStatus.addEventListener("change", displayComplaints);
+
+    // Start
+    loadComplaints();
+</script>
+
+</body>
+</html>
